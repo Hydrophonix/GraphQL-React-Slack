@@ -8,10 +8,13 @@ import cors from 'cors';
 
 import models from './models';
 
+const SECRET = 'dsrh7gs7hs7dfh7s87h';
+const SECRET2 = 'gsegseges423yhdfh35hdfh3';
+
 const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './schema')));
 const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './resolvers')));
 
-const port = 8080;
+const PORT = 8080;
 const app = express();
 app.use(cors('*'));
 
@@ -29,10 +32,12 @@ app.use('/graphql', bodyParser.json(), graphqlExpress({
     user: {
       id: 1,
     },
+    SECRET,
+    SECRET2,
   },
 }));
 app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
 
 models.sequelize.sync({}).then(() => {
-  app.listen(port);
+  app.listen(PORT);
 });
