@@ -5,6 +5,8 @@
   "dependencies": {
     "apollo-cache-inmemory": "^1.2.1",
     "apollo-client": "^2.3.1",
+    "apollo-link": "^1.2.2",
+    "apollo-link-context": "^1.0.8",
     "apollo-link-http": "^1.5.4",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
@@ -25,6 +27,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
     "eslint": "^4.9.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.7.0",
