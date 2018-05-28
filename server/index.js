@@ -8,7 +8,7 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 
 import models from './models';
-import { refreshTokkens } from './auth';
+import { refreshTokens } from './auth';
 
 const SECRET = 'dsrh7gs7hs7dfh7s87h';
 const SECRET2 = 'gsegseges423yhdfh35hdfh3';
@@ -28,7 +28,7 @@ const addUser = async (req, res, next) => {
       req.user = user;
     } catch (err) {
       const refreshToken = req.headers['x-refresh-token'];
-      const newTokens = await refreshTokkens(token, refreshToken, models, SECRET, SECRET2);
+      const newTokens = await refreshTokens(token, refreshToken, models, SECRET, SECRET2);
       if (newTokens.token && newTokens.refreshToken) {
         res.set('Access-Control-Headers', 'x-token, x-refresh-token');
         res.set('x-token', newTokens.token);

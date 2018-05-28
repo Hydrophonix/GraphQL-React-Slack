@@ -15,18 +15,12 @@ const PORT = 8080;
 const httpLink = createHttpLink({ uri: `http://localhost:${PORT}/graphql` });
 const cache = new InMemoryCache();
 
-const middlewareLink = setContext(() => {
-  if (!localStorage.getItem('token') && !localStorage.getItem('refreshToken')) {
-    return null;
-  }
-
-  return ({
-    headers: {
-      'x-token': localStorage.getItem('token'),
-      'x-refresh-token': localStorage.getItem('refreshToken'),
-    },
-  });
-});
+const middlewareLink = setContext(() => ({
+  headers: {
+    'x-token': localStorage.getItem('token'),
+    'x-refresh-token': localStorage.getItem('refreshToken'),
+  },
+}));
 
 const afterwareLink = new ApolloLink((operation, forward) => {
   const { headers } = operation.getContext();
