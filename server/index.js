@@ -8,7 +8,6 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { createServer } from 'http';
 import { execute, subscribe } from 'graphql';
-import { PubSub } from 'graphql-subscriptions';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 import models from './models';
@@ -67,7 +66,10 @@ app.use(
   })),
 );
 
-app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
+app.use('/graphiql', graphiqlExpress({
+  endpointURL: graphqlEndpoint,
+  subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`,
+}));
 
 const server = createServer(app);
 
@@ -78,6 +80,29 @@ models.sequelize.sync({}).then(() => {
       execute,
       subscribe,
       schema,
+      onConnect: async ({ token, refreshToken }, webSocket) => {
+        if (token && refreshToken) {
+          let userok = null;
+          try {
+            const payload = jwt.verify(token, SECRET);
+            userok = payload.user;
+          } catch (err) {
+            const newTokens = await refreshTokens(token, refreshToken, models, SECRET, SECRET2);
+            userok = newTokens.user;
+          }
+          if (!userok) {
+            throw new Error('Invalid auth tokens');
+          }
+
+          // const member = await models.Member.findOne({ where: { teamId: 1, userId: userok.id } });
+          // if (!member) {
+          //   throw new Error('Missing auth tokens!');
+          // }
+          return true;
+        }
+
+        throw new Error('Missing auth tokens!');
+      },
     }, {
       server,
       path: '/subscriptions',

@@ -38,14 +38,14 @@ const SendMessage = ({
   </InputWrapper>
 );
 
-const createMessagemutation = gql`
+const createMessageMutation = gql`
   mutation($channelId: Int!, $text: String!) {
     createMessage(channelId: $channelId, text: $text)
   }
 `;
 
 export default compose(
-  graphql(createMessagemutation),
+  graphql(createMessageMutation),
   withFormik({
     mapPropsToValues: () => ({ message: '' }),
     handleSubmit: async (values, { props: { channelId, mutate }, setSubmitting, resetForm }) => {

@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "apollo-cache-inmemory": "^1.2.1",
-    "apollo-client": "^2.3.1",
-    "apollo-link": "^1.2.2",
-    "apollo-link-context": "^1.0.8",
-    "apollo-link-http": "^1.5.4",
-    "apollo-link-ws": "^1.0.8",
-    "apollo-utilities": "^1.0.13",
+    "apollo-cache-inmemory": "^1.0.0",
+    "apollo-client": "^2.0.1",
+    "apollo-link": "^1.0.0",
+    "apollo-link-context": "^1.0.0",
+    "apollo-link-http": "^1.0.0",
+    "apollo-link-ws": "^1.0.0",
+    "apollo-utilities": "^1.0.1",
     "formik": "^0.11.11",
-    "graphql": "^0.13.2",
+    "graphql": "^0.11.7",
     "graphql-tag": "^2.9.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
@@ -24,8 +24,7 @@
     "react-scripts": "1.1.4",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.80.0",
-    "styled-components": "^3.2.6",
-    "subscriptions-transport-ws": "^0.9.9"
+    "styled-components": "^3.2.6"
   },
   "scripts": {
     "start": "react-scripts start",
