@@ -7,7 +7,6 @@ import findIndex from 'lodash/findIndex';
 
 import { meQuery } from '../graphql/team';
 
-
 const AddChannelModal = ({
   open, onClose, values, handleChange, handleBlur, isSubmitting, handleSubmit,
 }) => (

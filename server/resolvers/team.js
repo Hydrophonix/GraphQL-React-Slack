@@ -2,6 +2,17 @@ import formatErrors from '../formatErrors';
 import requiresAuth from '../permissions';
 
 export default {
+  Query: {
+    getTeamMembers: requiresAuth.createResolver(async (parent, { teamId }, { models }) =>
+      models.sequelize.query(
+        'select * from users as u join members as m on m.user_id = u.id where m.team_id = ?',
+        {
+          replacements: [teamId],
+          model: models.User,
+          raw: true,
+        },
+      )),
+  },
   Mutation: {
     addTeamMember: requiresAuth.createResolver(async (parent, { email, teamId }, { models, user }) => {
       try {
@@ -53,5 +64,14 @@ export default {
   },
   Team: {
     channels: ({ id }, args, { models }) => models.Channel.findAll({ where: { teamId: id } }),
+    directMessageMembers: ({ id }, args, { models, user }) =>
+      models.sequelize.query(
+        'select distinct on (u.id) u.id, u.username from users as u join direct_messages as dm on (u.id = dm.sender_id) or (u.id = dm.receiver_id) where (:currentUserId = dm.sender_id or :currentUserId = dm.receiver_id) and dm.team_id = :teamId',
+        {
+          replacements: { currentUserId: user.id, teamId: id },
+          model: models.User,
+          raw: true,
+        },
+      ),
   },
 };

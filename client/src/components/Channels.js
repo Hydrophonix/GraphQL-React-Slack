@@ -38,7 +38,15 @@ const Green = styled.span`color: #38978d;`;
 const Bubble = ({ on = true }) => (on ? <Green>●</Green> : '○');
 
 export default ({
-  userName, teamName, channels, users, onAddChannelClick, teamId, onInvitePeopleClick, isOwner,
+  userName,
+  teamName,
+  teamId,
+  isOwner,
+  users,
+  channels,
+  onAddChannelClick,
+  onInvitePeopleClick,
+  onDirectMessageClick,
 }) => (
   <ChannelWrapper>
     <PushLeft>
@@ -59,10 +67,15 @@ export default ({
     </div>
     <div>
       <SideBarList>
-        <SideBarListHeader>Direct Messages</SideBarListHeader>
-        {users.map(({ id, name }) => (
+        <SideBarListHeader>
+          Direct Messages
+          <Icon name="add circle" onClick={onDirectMessageClick} />
+        </SideBarListHeader>
+        {users.map(({ id, username }) => (
           <SideBarListItem key={`user-${id}`}>
-            <Bubble /> {name}
+            <Link to={`/view-team/user/${teamId}/${id}`}>
+              <Bubble /> {username}
+            </Link>
           </SideBarListItem>))}
       </SideBarList>
     </div>
