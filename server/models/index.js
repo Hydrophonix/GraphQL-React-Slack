@@ -10,11 +10,11 @@ const sequelize = new Sequelize('Hydrophonix', 'Hydrophonix', 'postgres', {
 
 const models = {
   User: sequelize.import('./user'),
+  Member: sequelize.import('./member'),
+  Team: sequelize.import('./team'),
   Channel: sequelize.import('./channel'),
   Message: sequelize.import('./message'),
-  Team: sequelize.import('./team'),
-  Member: sequelize.import('./member'),
-
+  DirectMessage: sequelize.import('./directMessage'),
 };
 
 Object.keys(models).forEach((modelName) => {

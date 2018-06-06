@@ -73,7 +73,7 @@ app.use('/graphiql', graphiqlExpress({
 
 const server = createServer(app);
 
-models.sequelize.sync({}).then(() => {
+models.sequelize.sync({ }).then(() => {
   server.listen(PORT, () => {
     // eslint-disable-next-line no-new
     new SubscriptionServer({
@@ -82,26 +82,16 @@ models.sequelize.sync({}).then(() => {
       schema,
       onConnect: async ({ token, refreshToken }, webSocket) => {
         if (token && refreshToken) {
-          let userok = null;
           try {
-            const payload = jwt.verify(token, SECRET);
-            userok = payload.user;
+            const { user } = jwt.verify(token, SECRET);
+            return { models, user };
           } catch (err) {
             const newTokens = await refreshTokens(token, refreshToken, models, SECRET, SECRET2);
-            userok = newTokens.user;
+            return { models, user: newTokens.user };
           }
-          if (!userok) {
-            throw new Error('Invalid auth tokens');
-          }
-
-          // const member = await models.Member.findOne({ where: { teamId: 1, userId: userok.id } });
-          // if (!member) {
-          //   throw new Error('Missing auth tokens!');
-          // }
-          return true;
         }
 
-        throw new Error('Missing auth tokens!');
+        return { models };
       },
     }, {
       server,

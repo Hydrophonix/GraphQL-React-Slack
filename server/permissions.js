@@ -17,6 +17,18 @@ export default createResolver((parent, args, { user }) => {
   }
 });
 
+export const requiresTeamAccess = createResolver(async (parent, { channelId }, { user, models }) => {
+  if (!user || !user.id) {
+    throw new Error('Not authenticated');
+  }
+  const channel = await models.Channel.findOne({ where: { id: channelId } });
+  const member = await models.Member.findOne({
+    where: { teamId: channel.teamId, userId: user.id },
+  });
+  if (!member) {
+    throw new Error('You have to be a member of the team to subscribe to its messages');
+  }
+});
 // export const requiresAdmin = requiresAuth.createResolver((parent, args, { user }) => {
 //   if (!user.isAdmin) {
 //     throw new Error('Requires admin access');

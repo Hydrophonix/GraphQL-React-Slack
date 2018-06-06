@@ -23,7 +23,7 @@ const InvitePeopleModal = ({
             fluid
           />
         </Form.Field>
-        {touched.email && errors.email ? errors.email[0] : null}
+        {touched.email && errors.email ? errors.email : null}
         <Form.Group widths="equal">
           <Button
             disabled={isSubmitting}
