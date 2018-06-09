@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize('Hydrophonix', 'Hydrophonix', 'postgres', {
+const sequelize = new Sequelize(process.env.TEST_DB || 'Hydrophonix', 'Hydrophonix', 'postgres', {
   dialect: 'postgres',
   operatorsAliases: Sequelize.Op,
   define: {
