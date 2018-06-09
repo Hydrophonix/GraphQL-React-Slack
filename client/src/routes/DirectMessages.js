@@ -12,7 +12,7 @@ import Input from '../components/Input';
 import { meQuery } from '../graphql/team';
 
 const ViewTeam =
-({ mutate, data: { loading, me }, match: { params: { teamId, userId } } }) => {
+({ mutate, data: { loading, me, getUser }, match: { params: { teamId, userId } } }) => {
   if (loading) {
     return null;
   }
@@ -37,10 +37,10 @@ const ViewTeam =
           letter: t.name.charAt(0).toUpperCase(),
         }))}
       />
-      <Header channelName="keko" />
+      <Header channelName={getUser.username} />
       <DirectMessageContainer
         userId={userId}
-        teamId={teamId}
+        teamId={team.id}
       />
       <Input
         placeholder={userId}
@@ -50,6 +50,23 @@ const ViewTeam =
               text,
               teamId,
               receiverId: userId,
+            },
+            optimisticResponse: {
+              createDirectMessage: true,
+            },
+            update: (store) => {
+              const data = store.readQuery({ query: meQuery });
+              const teamidx2 = findIndex(data.me.teams, ['id', team.id]);
+              const notAlreadyThere = data.me.teams[teamidx2].directMessageMembers.every(member =>
+                member.id !== parseInt(userId, 10));
+              if (notAlreadyThere) {
+                data.me.teams[teamidx2].directMessageMembers.push({
+                  __typename: 'User',
+                  id: userId,
+                  username: getUser.username,
+                });
+                store.writeQuery({ query: meQuery, data });
+              }
             },
           });
         }}
@@ -64,7 +81,37 @@ const createDirectMessageMutation = gql`
   }
 `;
 
+const directMessageMeQuery = gql`
+  query($userId: Int!) {
+    getUser(userId: $userId) {
+      username
+    }
+    me {
+      id
+      username
+      teams {
+        id
+        name
+        admin
+        directMessageMembers {
+          id
+          username
+        }
+        channels {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
 export default compose(
-  graphql(meQuery, { fetchPolicy: 'network-only' }),
+  graphql(directMessageMeQuery, {
+    options: props => ({
+      variables: { userId: props.match.params.userId },
+      fetchPolicy: 'network-only',
+    }),
+  }),
   graphql(createDirectMessageMutation),
 )(ViewTeam);
